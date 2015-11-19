@@ -183,7 +183,10 @@ function EmoteModule() {
 }
 
 EmoteModule.prototype.init = function() {
-    $.getJson("https://cdn.rawgit.com/Jiiks/betterDiscordApp/"+_hash+"/emotefilter.json", function(data) { bemotes = data.blacklist; });
+};
+
+EmoteModule.prototype.getBlacklist = function() {
+    $.getJSON("https://cdn.rawgit.com/Jiiks/betterDiscordApp/"+_hash+"/emotefilter.json", function(data) { bemotes = data.blacklist; });
 };
 
 EmoteModule.prototype.obsCallback = function(mutation) {
@@ -229,7 +232,7 @@ EmoteModule.prototype.injectEmote = function(node) {
     if(parent.tagName != "SPAN") return;
 
     var parentInnerHTML = parent.innerHTML;
-    var words = parentInnerHTML.split(" ");
+    var words = parentInnerHTML.split(/\s+/g);
 
     if(!words) return;
 
@@ -713,8 +716,9 @@ Utils.prototype.jqDefer = function(fnc) {
 };
 
 Utils.prototype.getHash = function() {
-    $.getJson("https://api.github.com/repos/Jiiks/BetterDiscordApp/commits/master", function(data) {
+    $.getJSON("https://api.github.com/repos/Jiiks/BetterDiscordApp/commits/master", function(data) {
         _hash = data.sha;
+        emoteModule.getBlacklist();
     });
 
 };
